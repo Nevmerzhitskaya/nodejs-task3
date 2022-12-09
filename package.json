@@ -1,0 +1,17 @@
+{
+    "name": "node-nodejs-file-manager",
+    "version": "1.0.0",
+    "description": "This repository is the part of task of nodejs-assignments https://github.com/AlreadyBored/nodejs-assignments",
+    "type": "module",
+    "scripts": {},
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Nevmerzhitskaya/nodejs-task3.git"
+    },
+    "author": "Nevmerzhitskaya",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Nevmerzhitskaya/nodejs-task3/issues"
+    },
+    "homepage": "https://github.com/Nevmerzhitskaya/nodejs-task3#readme"
+}
