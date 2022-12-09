@@ -1,6 +1,5 @@
-# File Manager
+# File Manager using Node.js APIs.
 
-## File Manager using Node.js APIs.
 - Work using CLI
 - Perform basic file operations (copy, move, delete, rename, etc.)
 - Utilize Streams API
