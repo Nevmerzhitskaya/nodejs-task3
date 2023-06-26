@@ -1,9 +1,10 @@
 import { createBrotliCompress } from 'node:zlib';
 import { createReadStream, createWriteStream } from 'node:fs';
 import path from 'path';
+import ErrorsMessage from '../helpers/errorsMessage.js';
+import errorConsole from '../helpers/errorsOutput.js';
 
 const brotli = createBrotliCompress();
-const error = new Error('FS operation failed');
 
 export default async function compress(pathSource, pathDestination) {
     const source = createReadStream(pathSource);
@@ -11,16 +12,13 @@ export default async function compress(pathSource, pathDestination) {
     const fileCompress = path.join(pathDestination, fileName + '.br');
     console.log('fileName', fileName);
     console.log('fileCompress', fileCompress);
-    console.log('pathDestination',pathDestination);
+    console.log('pathDestination', pathDestination);
     const destination = createWriteStream(fileCompress);
 
-    source.on('error', () => {
-        console.error(error.name + ':', error.message + ` Cannot find file ${pathSource}`);
-    }).pipe(brotli).on('error', () => {
-        console.error(error.name + ':', error.message);
-    }).pipe(destination).on('error', () => {
-        console.error(error.name + ':', error.message);
-    }).on('finish', () => {
-        console.log(`File ${pathSource} is commpressed`);
-    });
+    source.on('error', (err) => errorConsole(ErrorsMessage.OPERATION_FAILED, err.message))
+        .pipe(brotli).on('error', (err) => errorConsole(ErrorsMessage.OPERATION_FAILED, err.message))
+        .pipe(destination).on('error', (err) => errorConsole(ErrorsMessage.OPERATION_FAILED, err.message))
+        .on('finish', () => {
+            console.log(`\u001b[32m File ${pathSource} is commpressed to ${pathDestination} \u001B[0m`);
+        });
 }

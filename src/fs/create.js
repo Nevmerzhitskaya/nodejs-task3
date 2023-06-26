@@ -1,17 +1,14 @@
-import * as fsPromises from 'node:fs/promises';
-
-const error = new Error('FS operation failed');
+import { writeFile } from 'node:fs/promises';
+import ErrorsMessage from '../helpers/errorsMessage.js';
+import errorConsole from '../helpers/errorsOutput.js';
 
 export default async function create(filePath) {
-    try {
-        const buff = await fsPromises.open(filePath);
-        
-        if(buff) {
-            console.error(error.name + ':', error.message);
-            throw error;
-        }
 
+    try {
+        await writeFile(filePath, '', { flag: 'wx', encoding: 'utf8' });
+        console.log(`\u001b[32m File ${filePath} was successfully created \u001B[0m`);
     } catch (err) {
-        if(err.code === 'ENOENT') await fsPromises.writeFile(filePath);
+        errorConsole(ErrorsMessage.OPERATION_FAILED, err.message);
     }
+
 }

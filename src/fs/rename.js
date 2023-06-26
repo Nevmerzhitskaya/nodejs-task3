@@ -1,30 +1,12 @@
-import * as fsPromises from 'node:fs/promises';
+import { rename as renameFile } from 'node:fs/promises';
+import ErrorsMessage from '../helpers/errorsMessage.js';
+import errorConsole from '../helpers/errorsOutput.js';
 
 export default async function rename(oldFile, newFile) {
-
-    const error = new Error('FS operation failed');
-
     try {
-
-        const isExistSourceFile = await checkFile(oldFile);
-        if(!isExistSourceFile) throw error;
-
-        const isExistResultFile = await checkFile(newFile);
-        if(isExistResultFile) throw error;
-
-        await fsPromises.rename(oldFile, newFile);
-
+        await renameFile(oldFile, newFile);
+        console.log(`\u001b[32m File ${oldFile} was successfully renamed to ${newFile} \u001B[0m`);
     } catch (err) {
-        console.error(error.name + ':', error.message);
-    }
-}
-
-async function checkFile(path) {
-    try {
-        await fsPromises.open(path, 'r');
-
-        return true;
-    } catch (err) {
-        return false;
+        errorConsole(ErrorsMessage.OPERATION_FAILED, err.message);
     }
 }

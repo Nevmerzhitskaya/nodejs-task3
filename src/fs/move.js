@@ -1,7 +1,9 @@
 import { createWriteStream } from 'node:fs';
 import { createReadStream } from 'node:fs';
-import * as fsPromises from 'node:fs/promises';
+import { unlink } from 'node:fs/promises';
 import path from 'path';
+import ErrorsMessage from '../helpers/errorsMessage.js';
+import errorConsole from '../helpers/errorsOutput.js';
 
 export default async function move(pathSource, pathCopyDirectory) {
 
@@ -13,13 +15,10 @@ export default async function move(pathSource, pathCopyDirectory) {
 
     readStream.on('error', async function (err) {
         writeStream.end();
-        await fsPromises.unlink(pathCopy, function (err) {
-            if (err) console.error(`FS operation failed. Cannot find file ${pathSource}`);
-        });
-        console.error(`FS operation failed. Cannot find file ${pathSource}`);
+        await unlink(pathCopy, (err) => errorConsole(ErrorsMessage.OPERATION_FAILED, err.message));
+        errorConsole(ErrorsMessage.OPERATION_FAILED, err.message);
     }).on('end', async function () {
-        await fsPromises.unlink(pathSource, function (err) {
-            if (err) console.error(`FS operation failed. Cannot find file ${pathSource}`);
-        });
-    }).pipe(writeStream).on('error', () => console.log(`FS operation failed.`));
+        await unlink(pathSource, (err) => errorConsole(ErrorsMessage.OPERATION_FAILED, err.message));
+        console.log(`\u001b[32m File ${pathSource} was successfully moved to ${pathCopyDirectory} \u001B[0m`);
+    }).pipe(writeStream).on('error', (err) => errorConsole(ErrorsMessage.OPERATION_FAILED, err.message));
 }

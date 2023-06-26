@@ -1,8 +1,10 @@
-import * as fsPromises from 'node:fs/promises';
+import { readdir } from 'node:fs/promises';
+import ErrorsMessage from '../helpers/errorsMessage.js';
+import errorConsole from '../helpers/errorsOutput.js';
 
 export default async function list(filepath) {
     try {
-        const listFiles = await fsPromises.readdir(filepath, { withFileTypes: true });
+        const listFiles = await readdir(filepath, { withFileTypes: true });
 
         let fileArray = [];
 
@@ -22,7 +24,7 @@ export default async function list(filepath) {
         console.table(fileArray);
 
     } catch (err) {
-        console.error(err.name + ':', 'Operation failed');
+        errorConsole(ErrorsMessage.OPERATION_FAILED, err.message);
     }
 }
 
